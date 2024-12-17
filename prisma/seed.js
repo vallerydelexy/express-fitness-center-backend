@@ -4,15 +4,18 @@ import { encryptCreditCard } from '../src/config/encryption.js';
 
 const prisma = new PrismaClient();
 
-async function main() {
-  console.log('Seeding database...');
 
-  // Clear existing data to prevent conflicts
+async function deleteAllData() {
   await prisma.subscription.deleteMany();
   await prisma.exercise.deleteMany();
   await prisma.service.deleteMany();
   await prisma.creditCardInfo.deleteMany();
   await prisma.user.deleteMany();
+}
+
+async function main() {
+  console.log('Seeding database...');
+  await deleteAllData();
 
   // Create Users
   const users = [];
@@ -29,7 +32,6 @@ async function main() {
       },
     });
 
-    // Create CreditCardInfo for half the users
       await prisma.creditCardInfo.create({
         data: {
           userId: user.id,

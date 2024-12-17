@@ -41,8 +41,6 @@ class ValidationMiddleware {
         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
         .withMessage('Password must include uppercase, lowercase, number, and special character'),
       body('phoneNumber').isMobilePhone().withMessage('Invalid phone number'),
-      
-      // Credit Card Validation (optional)
       body('creditCard')
         // .optional({ checkFalsy: true })
         .custom((creditCard) => {
@@ -50,9 +48,9 @@ class ValidationMiddleware {
           if (!creditCard.number) {
             throw new Error('Credit card number is required');
           }
-          if (!this.isValidCreditCardNumber(creditCard.number)) {
-            throw new Error('Invalid credit card number');
-          }
+          // if (!this.isValidCreditCardNumber(creditCard.number)) {
+          //   throw new Error('Invalid credit card number');
+          // }
 
           // CVV validation
           if (!creditCard.cvv) {

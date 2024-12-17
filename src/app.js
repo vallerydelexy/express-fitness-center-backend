@@ -5,7 +5,10 @@ import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import registrationRoutes from './routes/registrationRoutes.js';
 import subscriptionRoutes from './routes/subscriptionRoutes.js';
-import {validateEnv} from './config/validateEnv.js';
+// import {validateEnv} from './config/validateEnv.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json' assert { type: 'json' };
+
 
 const app = express();
 // await validateEnv();
@@ -15,10 +18,11 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-// app.use('/api', (req, res) => res.json({ message: 'Welcome to the Fitness Center API!' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/register', registrationRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -29,7 +33,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

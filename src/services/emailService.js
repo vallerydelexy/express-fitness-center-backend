@@ -27,8 +27,6 @@ class EmailService {
       `
     });
   }
-
-  // ... other methods remain the same
 }
 
 export default EmailService;

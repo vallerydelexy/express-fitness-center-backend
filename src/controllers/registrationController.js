@@ -129,8 +129,6 @@ class RegistrationController {
       });
     }
   }
-
-  // ... rest of the methods remain the same
 }
 
 export default RegistrationController;

@@ -6,25 +6,25 @@ import authMiddleware from '../middleware/authMiddleware.js';
 import { body } from 'express-validator';
 
 const router = express.Router();
-
+// #swagger prefix="/auth"
 router.post(
   '/login', 
   ValidationMiddleware.loginValidation(),
   AuthController.login
 );
-
+// #swagger prefix="/auth"
 router.post(
   '/logout', 
   authMiddleware, 
   AuthController.logout
 );
-
+// #swagger prefix="/auth"
 router.post(
   '/reset-password', 
   body('email').isEmail(), 
   AuthController.resetPassword
 );
-
+// #swagger prefix="/auth"
 router.post(
   '/confirm-reset', 
   body('token').notEmpty(),

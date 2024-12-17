@@ -7,7 +7,7 @@ import EmailService from './emailService.js';
 class AuthService {
   static async generateToken(userId) {
     return jwt.sign({ userId }, process.env.JWT_SECRET, { 
-      expiresIn: '1h' 
+      expiresIn: `${process.env.JWT_EXPIRATION}` 
     });
   }
 
@@ -24,7 +24,8 @@ class AuthService {
       throw new Error('Invalid credentials');
     }
 
-    return this.generateToken(user.id);
+    const token = await this.generateToken(user.id);
+    return {token: token, userId: user.id};
   }
 
   static async resetPassword(email) {
