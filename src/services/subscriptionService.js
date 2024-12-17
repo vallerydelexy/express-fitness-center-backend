@@ -19,6 +19,18 @@ class SubscriptionService {
       throw new Error('Service not found');
     }
 
+    const existingSubscription = await prisma.subscription.findFirst({
+      where: {
+        userId,
+        serviceId,
+        status: 'ACTIVE'
+      }
+    });
+  
+    if (existingSubscription) {
+      throw new Error('You already have an active subscription to this service');
+    }
+
     return await prisma.subscription.create({
       data: {
         userId,

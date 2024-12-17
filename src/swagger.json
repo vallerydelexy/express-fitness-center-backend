@@ -139,25 +139,54 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "name": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Rizki Aprita"
                 },
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "email@gmail.com"
                 },
                 "password": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Password1@3"
                 },
                 "phoneNumber": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "+6281234567890"
                 },
                 "creditCard": {
-                  "example": "any"
+                  "type": "object",
+                  "properties": {
+                    "number": {
+                      "type": "string",
+                      "example": "6282798719838231"
+                    },
+                    "cvv": {
+                      "type": "string",
+                      "example": "123"
+                    },
+                    "expiryDate": {
+                      "type": "string",
+                      "example": "2027-12-01"
+                    },
+                    "holderName": {
+                      "type": "string",
+                      "example": "Rizki Aprita"
+                    }
+                  }
                 }
-              }
+              },
+              "required": [
+                "name",
+                "email",
+                "password",
+                "phoneNumber"
+              ]
             }
           }
         ],
@@ -175,8 +204,15 @@
       }
     },
     "/api/register/verify-email": {
-      "post": {
+      "get": {
         "description": "",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -210,6 +246,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -295,6 +334,63 @@
               "type": "object",
               "properties": {
                 "additionalSessions": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/payment/initiate": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "serviceId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/payment/verify": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "transactionId": {
+                  "example": "any"
+                },
+                "otpCode": {
                   "example": "any"
                 }
               }

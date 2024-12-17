@@ -48,72 +48,72 @@ async function main() {
 
   console.log('Users created');
 
-  // Create Services
-  const services = [];
-  for (let i = 0; i < 2; i++) {
-    const serviceTypes = [
-      {
-        name: i === 0 
-          ? "Program Penurunan Berat Badan untuk Obesitas" 
-          : "Program Pemeliharaan Kebugaran Tubuh",
-        type: i === 0 ? 'OVERWEIGHT' : 'FITNESS_MAINTENANCE',
-        price: i === 0 ? 500000 : 350000, // Price in Indonesian Rupiah
-        schedule: i === 0 
-          ? "Senin, Rabu, Jumat pukul 07:00 WIB" 
-          : "Selasa, Kamis pukul 18:00 WIB",
-        duration: i === 0 ? 12 : 8, // Total number of sessions
-      }
-    ];
+  const serviceDetails = [
+    {
+      name: "Program Penurunan Berat Badan untuk Obesitas dan Overweight",
+      type: 'OVERWEIGHT',
+      price: 500000,
+      schedule: "Senin, Rabu, Jumat pukul 07:00 WIB",
+      duration: 90,
+      exerciseDetails: [
+        {
+          name: "Kardio Intensif",
+          description: "Latihan kardiovaskular untuk membakar lemak dengan gerakan dinamis",
+          duration: 45
+        },
+        {
+          name: "Kekuatan Otot",
+          description: "Latihan beban ringan untuk membangun massa otot dan meningkatkan metabolisme",
+          duration: 30
+        },
+        {
+          name: "Fleksibilitas dan Peregangan",
+          description: "Stretching dan yoga ringan untuk meningkatkan mobilitas dan mencegah cedera",
+          duration: 15
+        }
+      ]
+    },
+    {
+      name: "Program Pemeliharaan Kebugaran Tubuh",
+      type: 'FITNESS_MAINTENANCE',
+      price: 350000,
+      schedule: "Selasa, Kamis pukul 18:00 WIB",
+      duration: 90,
+      exerciseDetails: [
+        {
+          name: "High-Intensity Interval Training (HIIT)",
+          description: "Latihan interval intensitas tinggi untuk menjaga kebugaran dan stamina",
+          duration: 40
+        },
+        {
+          name: "Latihan Kekuatan Fungsional",
+          description: "Gerakan yang meniru aktivitas sehari-hari untuk meningkatkan kekuatan dan koordinasi",
+          duration: 35
+        },
+        {
+          name: "Mindfulness dan Relaksasi",
+          description: "Teknik pernapasan dan meditasi untuk kesehatan mental dan fisik",
+          duration: 15
+        }
+      ]
+    }
+  ];
   
+  const services = [];
+  
+  for (const serviceDetail of serviceDetails) {
     const service = await prisma.service.create({
       data: {
-        name: serviceTypes[0].name,
-        type: serviceTypes[0].type,
-        price: serviceTypes[0].price,
-        schedule: serviceTypes[0].schedule,
-        duration: serviceTypes[0].duration,
+        name: serviceDetail.name,
+        type: serviceDetail.type,
+        price: serviceDetail.price,
+        schedule: serviceDetail.schedule,
+        duration: serviceDetail.duration,
       },
     });
   
-    // Create Exercises for each Service
-    const exerciseDetails = i === 0 
-      ? [
-          {
-            name: "Kardio Intensif",
-            description: "Latihan kardiovaskular untuk membakar lemak dengan gerakan dinamis",
-            duration: 45
-          },
-          {
-            name: "Kekuatan Otot",
-            description: "Latihan beban ringan untuk membangun massa otot dan meningkatkan metabolisme",
-            duration: 30
-          },
-          {
-            name: "Fleksibilitas dan Peregangan",
-            description: "Stretching dan yoga ringan untuk meningkatkan mobilitas dan mencegah cedera",
-            duration: 15
-          }
-        ]
-      : [
-          {
-            name: "High-Intensity Interval Training (HIIT)",
-            description: "Latihan interval intensitas tinggi untuk menjaga kebugaran dan stamina",
-            duration: 40
-          },
-          {
-            name: "Latihan Kekuatan Fungsional",
-            description: "Gerakan yang meniru aktivitas sehari-hari untuk meningkatkan kekuatan dan koordinasi",
-            duration: 35
-          },
-          {
-            name: "Mindfulness dan Relaksasi",
-            description: "Teknik pernapasan dan meditasi untuk kesehatan mental dan fisik",
-            duration: 15
-          }
-        ];
-  
     // Create Exercises
-    for (const exercise of exerciseDetails) {
+    for (const exercise of serviceDetail.exerciseDetails) {
       await prisma.exercise.create({
         data: {
           serviceId: service.id,

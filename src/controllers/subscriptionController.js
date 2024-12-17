@@ -16,10 +16,10 @@ class SubscriptionController {
 
   static async subscribe(req, res) {
     try {
-      const { userId } = req.user;
+      const { id } = req.user;
       const { serviceId } = req.body;
       const subscription = await SubscriptionService.createSubscription(
-        userId, 
+        id, 
         serviceId
       );
       

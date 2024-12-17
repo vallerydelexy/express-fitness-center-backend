@@ -1,3 +1,4 @@
+// prisma\schema.prisma
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
@@ -24,59 +25,82 @@ enum ServiceType {
   FITNESS_MAINTENANCE
 }
 
+enum PaymentStatus {
+  PENDING
+  VERIFIED
+  FAILED
+  EXPIRED
+}
+
 model User {
-  id                 String           @id @default(uuid())
-  email              String           @unique
-  password           String
-  name               String
-  phoneNumber        String
-  status             UserStatus       @default(UNVERIFIED)
-  emailVerifyToken   String?
-  resetPasswordToken String?
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
-  creditCardInfo     CreditCardInfo?
-  subscriptions      Subscription[]
+  id                  String               @id @default(uuid())
+  email               String               @unique
+  password            String
+  name                String
+  phoneNumber         String
+  status              UserStatus           @default(UNVERIFIED)
+  emailVerifyToken    String?
+  resetPasswordToken  String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  creditCardInfo      CreditCardInfo?
+  subscriptions       Subscription[]
+  paymentTransactions PaymentTransaction[]
 }
 
 model CreditCardInfo {
-  id             String   @id @default(uuid())
-  userId         String   @unique
-  user           User     @relation(fields: [userId], references: [id])
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id])
   encryptedCardNumber String
-  encryptedCVV   String
-  expiryDate     DateTime
-  cardHolderName String
+  encryptedCVV        String
+  expiryDate          DateTime
+  cardHolderName      String
 }
 
 model Service {
-  id             String         @id @default(uuid())
-  name           String
-  type           ServiceType
-  price          Float
-  schedule       String
-  duration       Int            // Total number of sessions
-  exercises      Exercise[]
-  subscriptions  Subscription[]
+  id                  String               @id @default(uuid())
+  name                String
+  type                ServiceType
+  price               Float
+  schedule            String
+  duration            Int // Total number of sessions
+  exercises           Exercise[]
+  subscriptions       Subscription[]
+  paymentTransactions PaymentTransaction[]
 }
 
 model Exercise {
-  id             String   @id @default(uuid())
-  serviceId      String
-  service        Service  @relation(fields: [serviceId], references: [id])
-  name           String
-  description    String
-  duration       Int      // Duration in minutes
+  id          String  @id @default(uuid())
+  serviceId   String
+  service     Service @relation(fields: [serviceId], references: [id])
+  name        String
+  description String
+  duration    Int // Duration in minutes
 }
 
 model Subscription {
-  id             String             @id @default(uuid())
-  userId         String
-  user           User               @relation(fields: [userId], references: [id])
-  serviceId      String
-  service        Service            @relation(fields: [serviceId], references: [id])
-  status         SubscriptionStatus @default(ACTIVE)
-  startDate      DateTime           @default(now())
+  id                String             @id @default(uuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id])
+  serviceId         String
+  service           Service            @relation(fields: [serviceId], references: [id])
+  status            SubscriptionStatus @default(ACTIVE)
+  startDate         DateTime           @default(now())
   remainingSessions Int
-  endDate        DateTime?
+  endDate           DateTime?
+}
+
+model PaymentTransaction {
+  id           String        @id @default(uuid())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  serviceId    String
+  service      Service       @relation(fields: [serviceId], references: [id])
+  amount       Float
+  status       PaymentStatus @default(PENDING)
+  otpCode      String?
+  otpExpiresAt DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }

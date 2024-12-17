@@ -5,14 +5,10 @@ class AuthController {
   static async login(req, res) {
     try {
       const { email, password } = req.body;
-      const user = await AuthService.login(email, password);
-      
-      const token = user.token;
-      const userId = user.userId;
+      const token = await AuthService.login(email, password);
       
       res.status(200).json({ 
         message: 'Login successful', 
-        userId,
         token,
       });
     } catch (error) {
