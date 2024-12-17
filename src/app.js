@@ -18,6 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+// #swagger.security = [{ "bearerAuth": [] }]
 app.use('/api/auth', authRoutes);
 app.use('/api/register', registrationRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);

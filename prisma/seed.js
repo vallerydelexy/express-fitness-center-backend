@@ -50,29 +50,80 @@ async function main() {
 
   // Create Services
   const services = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 2; i++) {
+    const serviceTypes = [
+      {
+        name: i === 0 
+          ? "Program Penurunan Berat Badan untuk Obesitas" 
+          : "Program Pemeliharaan Kebugaran Tubuh",
+        type: i === 0 ? 'OVERWEIGHT' : 'FITNESS_MAINTENANCE',
+        price: i === 0 ? 500000 : 350000, // Price in Indonesian Rupiah
+        schedule: i === 0 
+          ? "Senin, Rabu, Jumat pukul 07:00 WIB" 
+          : "Selasa, Kamis pukul 18:00 WIB",
+        duration: i === 0 ? 12 : 8, // Total number of sessions
+      }
+    ];
+  
     const service = await prisma.service.create({
       data: {
-        name: faker.commerce.productName(),
-        type: faker.helpers.arrayElement(['OVERWEIGHT', 'FITNESS_MAINTENANCE']),
-        price: parseFloat(faker.commerce.price(100, 1000, 2)),
-        schedule: `${faker.helpers.arrayElement(['Monday', 'Wednesday', 'Friday'])} at 10:00 AM`,
-        duration: faker.number.int({ min: 5, max: 20 }),
+        name: serviceTypes[0].name,
+        type: serviceTypes[0].type,
+        price: serviceTypes[0].price,
+        schedule: serviceTypes[0].schedule,
+        duration: serviceTypes[0].duration,
       },
     });
-
+  
     // Create Exercises for each Service
-    for (let j = 0; j < 3; j++) {
+    const exerciseDetails = i === 0 
+      ? [
+          {
+            name: "Kardio Intensif",
+            description: "Latihan kardiovaskular untuk membakar lemak dengan gerakan dinamis",
+            duration: 45
+          },
+          {
+            name: "Kekuatan Otot",
+            description: "Latihan beban ringan untuk membangun massa otot dan meningkatkan metabolisme",
+            duration: 30
+          },
+          {
+            name: "Fleksibilitas dan Peregangan",
+            description: "Stretching dan yoga ringan untuk meningkatkan mobilitas dan mencegah cedera",
+            duration: 15
+          }
+        ]
+      : [
+          {
+            name: "High-Intensity Interval Training (HIIT)",
+            description: "Latihan interval intensitas tinggi untuk menjaga kebugaran dan stamina",
+            duration: 40
+          },
+          {
+            name: "Latihan Kekuatan Fungsional",
+            description: "Gerakan yang meniru aktivitas sehari-hari untuk meningkatkan kekuatan dan koordinasi",
+            duration: 35
+          },
+          {
+            name: "Mindfulness dan Relaksasi",
+            description: "Teknik pernapasan dan meditasi untuk kesehatan mental dan fisik",
+            duration: 15
+          }
+        ];
+  
+    // Create Exercises
+    for (const exercise of exerciseDetails) {
       await prisma.exercise.create({
         data: {
           serviceId: service.id,
-          name: faker.commerce.productMaterial(),
-          description: faker.lorem.sentence(),
-          duration: faker.number.int({ min: 1, max: 60 }),
+          name: exercise.name,
+          description: exercise.description,
+          duration: exercise.duration,
         },
       });
     }
-
+  
     services.push(service);
   }
 

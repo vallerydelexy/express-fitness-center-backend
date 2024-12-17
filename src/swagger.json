@@ -6,20 +6,18 @@
     "version": "1.0.0"
   },
   "host": "localhost:3000",
-  "basePath": "/api",
-  "tags": [
-    {
-      "name": "Auth",
-      "description": "Authentication routes",
-      "externalDocs": {
-        "description": "Authentication endpoints",
-        "url": "/api/auth"
-      }
-    }
-  ],
+  "basePath": "/",
   "schemes": [
     "http"
   ],
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "JWT Authorization header using the Bearer token"
+    }
+  },
   "paths": {
     "/api/auth/login": {
       "post": {
@@ -47,6 +45,19 @@
           },
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/authrefresh-token": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -229,9 +240,6 @@
             "schema": {
               "type": "object",
               "properties": {
-                "userId": {
-                  "example": "any"
-                },
                 "serviceId": {
                   "example": "any"
                 }
@@ -303,5 +311,10 @@
         }
       }
     }
-  }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
 }

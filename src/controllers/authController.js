@@ -64,6 +64,22 @@ class AuthController {
       });
     }
   }
+
+  static async refreshToken(req, res) {
+    try {
+      const { userId } = req.user;
+      const token = await AuthService.generateToken(userId);
+      
+      res.status(200).json({ 
+        message: 'Token refreshed successfully', 
+        token 
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        error: error.message 
+      });
+    }
+  }
 }
 
 export default AuthController;

@@ -16,8 +16,8 @@ class SubscriptionController {
 
   static async subscribe(req, res) {
     try {
-      const { userId, serviceId } = req.body;
-      console.log(userId, serviceId);
+      const { userId } = req.user;
+      const { serviceId } = req.body;
       const subscription = await SubscriptionService.createSubscription(
         userId, 
         serviceId
