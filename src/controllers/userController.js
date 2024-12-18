@@ -43,25 +43,40 @@ class UserController {
       const { id } = req.user;
       const { name, creditCard } = req.body;
 
+      if (!name || !creditCard) {
+        return res.status(400).json({
+          error: "Name and credit card information are required",
+        });
+      }
+
+      if (!creditCard.number || !creditCard.cvv || !creditCard.expiryDate || !creditCard.holderName) {
+        return res.status(400).json({
+          error: "Credit card information is incomplete",
+        });
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { id: id },
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          error: "User not found",
+        });
+      }
+
       const updatedUser = await prisma.user.update({
         where: { id: id },
         data: {
           name,
           creditCardInfo: {
-            upsert: {
-              create: {
-                encryptedCardNumber: encryptCreditCard(creditCard.number),
+            update: {
+              encryptedCardNumber: encryptCreditCard(creditCard.number),
                 encryptedCVV: encryptCreditCard(creditCard.cvv),
                 expiryDate: new Date(creditCard.expiryDate),
                 cardHolderName: creditCard.holderName,
-              },
-              update: {
-                encryptedCardNumber: encryptCreditCard(creditCard.number),
-                encryptedCVV: encryptCreditCard(creditCard.cvv),
-                expiryDate: new Date(creditCard.expiryDate),
-                cardHolderName: creditCard.holderName,
-              },
-            },
+            }
+           
           },
         },
         select: {
