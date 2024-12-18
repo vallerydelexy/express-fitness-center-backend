@@ -1,64 +1,80 @@
 // src/controllers/userController.js
-import prisma from '../config/database.js';
+import prisma from "../config/database.js";
+import { encryptCreditCard } from "../config/encryption.js";
 
 class UserController {
   static async getUserProfile(req, res) {
     try {
-      const { userId } = req.user;
-      
+      const { id } = req.user;
+
       const user = await prisma.user.findUnique({
-        where: { id: userId },
+        where: { id: id },
         select: {
           id: true,
           name: true,
           email: true,
           phoneNumber: true,
           status: true,
+          creditCardInfo: true,
           subscriptions: {
             include: {
-              service: true
-            }
-          }
-        }
+              service: true,
+            },
+          },
+        },
       });
 
       if (!user) {
-        return res.status(404).json({ 
-          error: 'User not found' 
+        return res.status(404).json({
+          error: "User not found",
         });
       }
 
       res.status(200).json(user);
     } catch (error) {
-      res.status(500).json({ 
-        error: error.message 
+      res.status(500).json({
+        error: error.message,
       });
     }
   }
 
   static async updateProfile(req, res) {
     try {
-      const { userId } = req.user;
-      const { name, phoneNumber } = req.body;
+      const { id } = req.user;
+      const { name, creditCard } = req.body;
 
       const updatedUser = await prisma.user.update({
-        where: { id: userId },
+        where: { id: id },
         data: {
           name,
-          phoneNumber
+          creditCardInfo: {
+            upsert: {
+              create: {
+                encryptedCardNumber: encryptCreditCard(creditCard.number),
+                encryptedCVV: encryptCreditCard(creditCard.cvv),
+                expiryDate: new Date(creditCard.expiryDate),
+                cardHolderName: creditCard.holderName,
+              },
+              update: {
+                encryptedCardNumber: encryptCreditCard(creditCard.number),
+                encryptedCVV: encryptCreditCard(creditCard.cvv),
+                expiryDate: new Date(creditCard.expiryDate),
+                cardHolderName: creditCard.holderName,
+              },
+            },
+          },
         },
         select: {
           id: true,
           name: true,
-          email: true,
-          phoneNumber: true
-        }
+          creditCardInfo: true,
+        },
       });
 
       res.status(200).json(updatedUser);
     } catch (error) {
-      res.status(400).json({ 
-        error: error.message 
+      res.status(400).json({
+        error: error.message,
       });
     }
   }

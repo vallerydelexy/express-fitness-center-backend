@@ -256,6 +256,73 @@
         }
       }
     },
+    "/api/user/profile": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "other name"
+                },
+                "creditCard": {
+                  "type": "object",
+                  "properties": {
+                    "number": {
+                      "type": "string",
+                      "example": "6282798719838231"
+                    },
+                    "cvv": {
+                      "type": "string",
+                      "example": "123"
+                    },
+                    "expiryDate": {
+                      "type": "string",
+                      "example": "2027-12-01"
+                    },
+                    "holderName": {
+                      "type": "string",
+                      "example": "other name"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
     "/api/subscriptions/services": {
       "get": {
         "description": "",
